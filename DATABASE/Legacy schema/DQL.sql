@@ -36,17 +36,21 @@ ORDER BY eining_heiti, month, total_kwh DESC;
 
 
 -- Querie 2
-
-
-
-
-
-
-
-
-
-
-
+SELECT
+    eining_heiti as power_plant_source,
+    EXTRACT(YEAR FROM timi) as year,
+    EXTRACT(MONTH FROM timi) as month,
+    notandi_heiti as customer_name,
+    sum(gildi_kwh) as total_kwh
+FROM raforka_legacy.orku_maelingar
+WHERE EXTRACT(year FROM timi) = 2025
+AND notandi_heiti IS NOT NULL
+GROUP BY
+    eining_heiti,
+    EXTRACT(year FROM timi),
+    EXTRACT(month FROM timi),
+    notandi_heiti
+ORDER BY power_plant_source, month, customer_name
 
 
 
