@@ -18,7 +18,6 @@ LIMIT 20;
 -- Task A2
 
 -- Querie 1
--- Calculate the sum of kwh for each month and each type in 2025
 SELECT 
     eining_heiti as power_plant_source,
     EXTRACT(year FROM timi) as year,
@@ -32,7 +31,7 @@ GROUP BY
     EXTRACT(year FROM timi),
     EXTRACT(month FROM timi),
     tegund_maelingar
-ORDER BY eining_heiti, month, total_kwh DESC;
+ORDER BY power_plant_source, month, total_kwh DESC;
 
 
 -- Querie 2
@@ -50,16 +49,10 @@ GROUP BY
     EXTRACT(year FROM timi),
     EXTRACT(month FROM timi),
     notandi_heiti
-ORDER BY power_plant_source, month, customer_name
+ORDER BY power_plant_source, month, customer_name;
 
 
-
-
-
-
-
-
- -- Querie 3
+-- Querie 3
 DROP VIEW IF EXISTS montly_power_plant_energy_view;
 
 CREATE VIEW montly_power_plant_energy_view as
