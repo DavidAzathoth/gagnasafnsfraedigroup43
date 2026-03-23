@@ -18,8 +18,8 @@ CREATE TABLE raforka_legacy.notendur_skraning (
 
     CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE)),
 
-    FOREIGN KEY(eigandi_id) REFERENCES raforka_legacy.fyrirtaeki_skraning(id)
-    ON DELETE CASCADE
+    FOREIGN KEY(eigandi_id)
+        REFERENCES raforka_legacy.fyrirtaeki_skraning(id)
 );
 
 
