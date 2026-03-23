@@ -1,11 +1,13 @@
 from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app.db.tables.orku_einingar import OrkuEiningar
 from app.models.orku_einingar_model import OrkuEiningarModel
 from app.db.tables.notendur_skraning import NotendurSkraning
 from app.models.notendur_skraning_model import NotendurSkraningModel
 from app.db.tables.orku_maelingar import OrkuMaelingar
 from app.models.orku_maelingar_model import OrkuMaelingarModel
+from app.models.monthly_energy_flow_model import MonthlyPlantEnergyFlowModel
 from app.db.tables.test_measurement import TestMeasurement
 from app.models.parsed_data.test_measurement_data import TestMeasurementData
 from app.parsers.parse_test_measurment_csv import parse_test_measurement_csv
@@ -168,6 +170,48 @@ async def insert_test_measurement_data(
 '''
 Service 1: get_monthly_energy_flow_data()
 '''
+
+def get_monthly_energy_flow_data(
+        db: Session,
+        from_date: datetime,
+        to_date: datetime
+):
+    
+    query = """
+SELECT 
+    eining_heiti as power_plant_source,
+    EXTRACT(year FROM timi) as year,
+    EXTRACT(month FROM timi) as month,
+    tegund_maelingar as measurement_type,
+    SUM(gildi_kwh) as total_kwh
+FROM raforka_legacy.orku_maelingar
+where timi >= :from_date AND timi <= :to_date
+GROUP BY
+    eining_heiti,
+    EXTRACT(year FROM timi),
+    EXTRACT(month FROM timi),
+    tegund_maelingar
+ORDER BY eining_heiti, month, total_kwh DESC
+    """
+
+    rows = db.execute(
+        text(query),
+            {
+                "from_date": from_date,
+                "to_date": to_date
+            }
+        ).mappings().all()
+    
+    return [
+        MonthlyPlantEnergyFlowModel(
+            power_plant_source = row.power_plant_source,
+            measurement_type = row.measurement_type,
+            year = row.year,
+            month = row.month,
+            total_kwh = row.total_kwh
+        )
+        for row in rows
+    ]
 
 '''
 Service 2: get_monthly_company_usage_data()
