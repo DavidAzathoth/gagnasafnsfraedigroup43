@@ -1,19 +1,19 @@
 SELECT *
-FROM raforka_legacy.notendur_skraning
+FROM raforka_legacy.notendur_skraning;
 
 SELECT *
-FROM raforka_legacy.notendur_skraning_id_seq
+FROM raforka_legacy.notendur_skraning_id_seq;
 
 SELECT * 
-FROM raforka_legacy.orku_einingar
+FROM raforka_legacy.orku_einingar;
 
 
 SELECT * 
-FROM raforka_legacy.orku_einingar_id_seq
+FROM raforka_legacy.orku_einingar_id_seq;
 
 SELECT *
 FROM raforka_legacy.orku_maelingar
-LIMIT 20
+LIMIT 20;
 
 -- Task A2
 
@@ -32,7 +32,7 @@ GROUP BY
     EXTRACT(year FROM timi),
     EXTRACT(month FROM timi),
     tegund_maelingar
-ORDER BY eining_heiti, month, total_kwh DESC
+ORDER BY eining_heiti, month, total_kwh DESC;
 
 
 -- Querie 2
