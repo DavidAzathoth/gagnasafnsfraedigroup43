@@ -1,9 +1,9 @@
 -- Task C3
 
-DROP TABLE IF EXISTS raforka_updated.eiganda_skraning
-DROP TABLE IF EXISTS notendur_skraning
-DROP TABLE IF EXISTS orku_einingar
-DROP TABLE IF EXISTS orku_maelingar
+DROP TABLE IF EXISTS raforka_updated.eiganda_skraning;
+DROP TABLE IF EXISTS raforka_updated.notendur_skraning;
+DROP TABLE IF EXISTS raforka_updated.orku_einingar;
+DROP TABLE IF EXISTS raforka_updated.orku_maelingar;
 
 --
 -- Name: raforka_; Type: SCHEMA; Schema: -; Owner: bjarki1312
@@ -47,13 +47,13 @@ CREATE TABLE raforka_updated.orku_einingar (
 );
 
 CREATE TABLE raforka_updated.stodvar (
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 
 );
 
 CREATE TABLE raforka_updated.virkjanir (
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-)
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+);
 
 
 CREATE TABLE raforka_updated.orku_maelingar (
@@ -69,7 +69,7 @@ CREATE TABLE raforka_updated.orku_maelingar (
 
 CREATE TABLE raforka_updated.uttekt (
     maeling_id integer PRIMARY KEY REFERENCES orku_maelingar(id),
-    notandi_heiti VARCHAR(100) NOT NULL,
+    notandi_heiti VARCHAR(100) NOT NULL
 
 );
 
