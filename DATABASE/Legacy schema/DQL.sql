@@ -7,13 +7,20 @@ FROM raforka_legacy.notendur_skraning_id_seq;
 SELECT * 
 FROM raforka_legacy.orku_einingar;
 
+SELECT *
+FROM raforka_legacy.test_measurement;
 
 SELECT * 
 FROM raforka_legacy.orku_einingar_id_seq;
 
 SELECT *
 FROM raforka_legacy.orku_maelingar
-LIMIT 20;
+LIMIT 100;
+
+select *
+from raforka_legacy.orku_maelingar
+where tegund_maelingar ilike 'úttekt'
+LIMIT 100;
 
 -- Task A2
 
@@ -77,3 +84,4 @@ SELECT
 FROM montly_power_plant_energy_view
 GROUP BY power_plant_source
 ORDER BY power_plant_source ASC;
+
