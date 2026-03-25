@@ -8,19 +8,14 @@ SELECT *
 FROM raforka_legacy.orku_einingar;
 
 SELECT *
-FROM raforka_legacy.test_measurement;
-
-SELECT * 
-FROM raforka_legacy.orku_einingar_id_seq;
-
-SELECT *
 FROM raforka_legacy.orku_maelingar
 LIMIT 100;
 
 select *
 from raforka_legacy.orku_maelingar
-where tegund_maelingar ilike 'úttekt'
+where tegund_maelingar ilike 'innmötun'
 LIMIT 100;
+
 
 -- Task A2
 
