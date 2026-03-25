@@ -70,9 +70,11 @@ CREATE TABLE raforka_updated.orku_maelingar (
 CREATE TABLE raforka_updated.uttekt (
     maeling_id integer PRIMARY KEY REFERENCES orku_maelingar(id),
     notandi_heiti VARCHAR(100) NOT NULL,
+
 );
 
 CREATE TABLE raforka_updated.framleidsla (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     maeling_id integer REFERENCES orku_maelingar(id),
     virkjun_id integer NOT NULL REFERENCES orku_einingar(id)
 );
