@@ -10,11 +10,7 @@ def migrate_data():
         
 
         connection.execute(text("""
-            INSERT INTO raforka_updated.eigendur_notenda (kennitala, heiti)
-            SELECT DISTINCT kennitala, eigandi
-            FROM raforka_legacy.notendur_skraning
-            WHERE kennitala IS NOT NULL
-                AND eigandi IS NOT NULL
+            ....
 """))
 
         
