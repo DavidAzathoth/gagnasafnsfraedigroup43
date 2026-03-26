@@ -30,7 +30,8 @@ CREATE TABLE raforka_updated.notendur_skraning (
     CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE)),
 
     FOREIGN KEY(eigandi_id)
-        REFERENCES raforka_updated.fyrirtaeki_skraning(id)
+        REFERENCES raforka_updated.eigendur_notenda(id)
+        -- Breytti í refrences eigendur notenda
 );
 
 
