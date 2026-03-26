@@ -58,7 +58,7 @@ CREATE TABLE raforka_updated.virkjanir (
 
 CREATE TABLE raforka_updated.orku_maelingar (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    eining_id int NOT NULL REFERENCES orku_einingar(id),
+    eining_id int NOT NULL REFERENCES raforka_updated.orku_einingar(id),
     tegund VARCHAR(11) CHECK (
         LOWER(tegund) IN ('framleiðsla', 'innmötun', 'úttekt')),
     sendandi_maelingar text,
@@ -68,21 +68,21 @@ CREATE TABLE raforka_updated.orku_maelingar (
 );
 
 CREATE TABLE raforka_updated.uttekt (
-    maeling_id integer PRIMARY KEY REFERENCES orku_maelingar(id),
+    maeling_id integer PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
     notandi_heiti VARCHAR(100) NOT NULL
 
 );
 
 CREATE TABLE raforka_updated.framleidsla (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    maeling_id integer REFERENCES orku_maelingar(id),
-    virkjun_id integer NOT NULL REFERENCES orku_einingar(id)
+    maeling_id integer REFERENCES raforka_updated.orku_maelingar(id),
+    virkjun_id integer NOT NULL REFERENCES raforka_updated.orku_einingar(id)
 );
 
 CREATE TABLE raforka_updated.innmotun (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    maeling_id integer PRIMARY KEY REFERENCES orku_maelingar(id),
-    stod integer NOT NULL REFERENCES orku_einingar(id)
+    maeling_id integer PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
+    stod integer NOT NULL REFERENCES raforka_updated.orku_einingar(id)
 );
 
 -- Task D1
