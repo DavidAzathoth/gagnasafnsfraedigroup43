@@ -43,7 +43,7 @@ CREATE TABLE raforka_updated.orku_einingar (
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
     tengd_stod int,
-    FOREIGN KEY (tengd_stod) REFERENCES orku_einingar(id)
+    FOREIGN KEY (tengd_stod) REFERENCES raforka_updated.orku_einingar(id)
 );
 
 CREATE TABLE raforka_updated.stodvar (
