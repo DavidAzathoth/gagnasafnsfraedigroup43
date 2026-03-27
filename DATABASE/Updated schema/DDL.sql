@@ -27,6 +27,11 @@ CREATE TABLE raforka_updated.eigendur_notenda (
     CHECK(kennitala ~ '^[0-9]{10}$')
 );
 
+CREATE TABLE raforka_updated.eigendur_eininga(
+    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    heiti VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE raforka_updated.notendur_skraning (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
@@ -43,7 +48,7 @@ CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
     tegund VARCHAR(7) NOT NULL CHECK(LOWER(tegund) IN ('stod', 'virkjun')),
-    eigandi VARCHAR(100) NOT NULL,
+    eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
     ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
@@ -53,7 +58,6 @@ CREATE TABLE raforka_updated.orku_einingar (
 
 CREATE TABLE raforka_updated.stodvar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY
-
 );
 
 CREATE TABLE raforka_updated.virkjanir (
