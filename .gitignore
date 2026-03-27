@@ -2,4 +2,7 @@ API/Legacy api/app/db/session.py
 API/Legacy api/requirements.txt
 API/Legacy api/requirements.txt
 API/Legacy api/requirements.txt
+API/Legacy api/app/services/__pycache__/service.cpython-311.pyc
+/API/.venv
+/API/Legacy api/app/services/__pycache__
 /.venv
