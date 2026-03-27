@@ -55,22 +55,20 @@ CREATE TABLE raforka_updated.orku_einingar (
     CHECK (stod <> id)
 );
 
-CREATE TABLE raforka_updated.stodvar (
-    id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
-    tegund_stod VARCHAR(50) DEFAULT 'Aðveitustöð'
-);
+--------------------------
+--delete?
+--------------------------
 
-CREATE TABLE raforka_updated.virkjanir (
-    id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
-    tegund_stod VARCHAR(50)
-);
+-- CREATE TABLE raforka_updated.stodvar (
+--     id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
+--     tegund_stod VARCHAR(50) DEFAULT 'Aðveitustöð'
+-- );
 
-CREATE TABLE raforka_updated.tengingar (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    fra_eining int REFERENCES raforka_updated.orku_einingar(id),
-    til_eining int REFERENCES raforka_updated.orku_einingar(id),
-    CHECK (fra_eining <> til_eining)
-);
+-- CREATE TABLE raforka_updated.virkjanir (
+--     id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
+--     tegund_stod VARCHAR(50)
+-- );
+
 
 CREATE TABLE raforka_updated.orku_maelingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -82,27 +80,33 @@ CREATE TABLE raforka_updated.orku_maelingar (
 );
 
 
-
 CREATE TABLE raforka_updated.uttekt (
     maeling_id int PRIMARY KEY 
         REFERENCES raforka_updated.orku_maelingar(id),
     notandi_id int NOT NULL 
-        REFERENCES raforka_updated.notendur_skraning(id)
+        REFERENCES raforka_updated.notendur_skraning(id),
+    
+    --Delete?
+    stod_id int NOT NULL REFERENCES raforka_updated.orku_einingar(id)
 );
 
-CREATE TABLE raforka_updated.framleidsla (
-    maeling_id int PRIMARY KEY 
-        REFERENCES raforka_updated.orku_maelingar(id),
-    virkjun_id int NOT NULL 
-        REFERENCES raforka_updated.virkjanir(id)
-);
+----------------
+--delete?
+----------------
 
-CREATE TABLE raforka_updated.innmotun (
-    maeling_id int PRIMARY KEY 
-        REFERENCES raforka_updated.orku_maelingar(id),
-    stod_id int NOT NULL
-        REFERENCES raforka_updated.stodvar(id)
-);
+-- CREATE TABLE raforka_updated.framleidsla (
+--     maeling_id int PRIMARY KEY 
+--         REFERENCES raforka_updated.orku_maelingar(id),
+--     virkjun_id int NOT NULL 
+--         REFERENCES raforka_updated.virkjanir(id)
+-- );
+
+-- CREATE TABLE raforka_updated.innmotun (
+--     maeling_id int PRIMARY KEY 
+--         REFERENCES raforka_updated.orku_maelingar(id),
+--     stod_id int NOT NULL
+--         REFERENCES raforka_updated.stodvar(id)
+-- );
 
 
 ----------------------------------------------------------------
