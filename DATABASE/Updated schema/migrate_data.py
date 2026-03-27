@@ -7,7 +7,12 @@ def migrate_data():
     engine = create_engine(DATABASE_URL)
 
     with engine.begin() as connection:
-        
+##########Migrate eigendur_eininga############
+        connection.execute(text("""
+            INSERT INTO raforka_updated.eigendur_eininga (heiti)
+            SELECT DISTINCT(oe.eigandi)
+            FROM raforka_legacy.orku_einingar oe;
+"""))
         
 ############Migrate orku_einingar############
         connection.execute(text("""
@@ -51,13 +56,31 @@ def migrate_data():
         connection.execute(text("""
             UPDATE raforka_updated.orku_einingar new
             SET eigandi_id = e.id
-            FROM raforka_updated.eigendur_eininga e
-            JOIN id_map m ON new_id = m.new_id
+            FROM id_map m
             JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
-            WHERE e.heiti = old.eigandi;
-"""))       
-
-        
+            JOIN raforka_updated.eigendur_eininga e ON e.heiti = old.eigandi 
+            WHERE new.id = m.new_id;
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.stodvar
+            (id, tegund)
+            SELECT
+                id,
+                tegund
+            FROM
+            raforka_updated.orku_einingar e
+            WHERE e.tegund = 'stod'
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.virkjanir
+            (id, tegund)
+            SELECT
+                id,
+                tegund
+            FROM
+            raforka_updated.orku_einingar e
+            WHERE e.tegund = 'virkjun'
+"""))
 
 
 
