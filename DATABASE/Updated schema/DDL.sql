@@ -1,9 +1,21 @@
 -- Task C3
 
 DROP TABLE IF EXISTS raforka_updated.eiganda_skraning;
-DROP TABLE IF EXISTS raforka_updated.notendur_skraning;
-DROP TABLE IF EXISTS raforka_updated.orku_einingar;
-DROP TABLE IF EXISTS raforka_updated.orku_maelingar;
+DROP TABLE IF EXISTS notendur_skraning;
+DROP TABLE IF EXISTS orku_einingar;
+DROP TABLE IF EXISTS orku_maelingar;
+
+DROP TABLE IF EXISTS
+    raforka_updated.eigendur_notenda,
+    raforka_updated.notendur_skraning,
+    raforka_updated.orku_einingar,
+    raforka_updated.stodvar,
+    raforka_updated.virkjanir,
+    raforka_updated.orku_maelingar,
+    raforka_updated.uttekt,
+    raforka_updated.framleidsla,
+    raforka_updated.innmotun
+
 
 --
 -- Name: raforka_; Type: SCHEMA; Schema: -; Owner: bjarki1312
@@ -43,7 +55,7 @@ CREATE TABLE raforka_updated.orku_einingar (
     ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
-    tengd_stod int,
+    tengd_stod int NULL,
     FOREIGN KEY (tengd_stod) REFERENCES raforka_updated.orku_einingar(id)
 );
 
@@ -66,23 +78,27 @@ CREATE TABLE raforka_updated.orku_maelingar (
     timi timestamp without time zone,
     gildi_kwh numeric,
     notandi_heiti text
+    virkjun int NOT NULL REFERENCES raforka_updated.orku_einingar(id)
+    stod int NULL
 );
 
+
+
+
+/*delete this*/
 CREATE TABLE raforka_updated.uttekt (
     maeling_id integer PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
     notandi_heiti VARCHAR(100) NOT NULL
-
 );
 
 CREATE TABLE raforka_updated.framleidsla (
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     maeling_id integer REFERENCES raforka_updated.orku_maelingar(id),
     virkjun_id integer NOT NULL REFERENCES raforka_updated.orku_einingar(id)
 );
 
 CREATE TABLE raforka_updated.innmotun (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    maeling_id integer PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
+    maeling_id integer NOT NULL REFERENCES raforka_updated.orku_maelingar(id),
     stod integer NOT NULL REFERENCES raforka_updated.orku_einingar(id)
 );
 
