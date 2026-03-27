@@ -157,6 +157,12 @@ from raforka_updated.orku_einingar;
 select *
 from raforka_legacy.orku_einingar;
 
+select *
+from raforka_updated.stodvar;
+
+select *
+from raforka_updated.virkjanir;
+
 select * 
 from raforka_legacy.orku_maelingar
 LIMIT 100;
