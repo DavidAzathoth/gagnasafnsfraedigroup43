@@ -1,7 +1,7 @@
 # Task C4
 from sqlalchemy import create_engine, text
 
-DATABASE_URL = "postgresql+psycopg2://postgres:123@localhost:5432/OrkuflaediIsland"
+DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/OrkuflaediIsland"
 
 def migrate_data():
     engine = create_engine(DATABASE_URL)
@@ -9,6 +9,7 @@ def migrate_data():
     with engine.begin() as connection:
         
         
+############Migrate orku_einingar############
         connection.execute(text("""
             CREATE TEMP TABLE id_map (
                 old_id INT,
@@ -17,11 +18,10 @@ def migrate_data():
 """))
         connection.execute(text("""
             INSERT INTO raforka_updated.orku_einingar
-            (heiti, tegund, eigandi, ar_uppsett, "X_HNIT", "Y_HNIT")
+            (heiti, tegund, ar_uppsett, "X_HNIT", "Y_HNIT")
             SELECT
                 heiti,
                 tegund,
-                eigandi,
                 MAKE_DATE(ar_uppsett, manudir_uppsett, dagur_uppsett),
                 CAST("X_HNIT" AS DECIMAL(9,6)),
                 CAST("Y_HNIT" AS DECIMAL(9,6))
@@ -48,6 +48,14 @@ def migrate_data():
 
             WHERE new.id = m1.new_id;
 """))
+        connection.execute(text("""
+            UPDATE raforka_updated.orku_einingar new
+            SET eigandi_id = e.id
+            FROM raforka_updated.eigendur_eininga e
+            JOIN id_map m ON new_id = m.new_id
+            JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
+            WHERE e.heiti = old.eigandi;
+"""))       
 
         
 
