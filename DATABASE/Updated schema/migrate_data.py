@@ -7,7 +7,12 @@ def migrate_data():
     engine = create_engine(DATABASE_URL)
 
     with engine.begin() as connection:
-        
+##########Migrate eigendur_eininga############
+        connection.execute(text("""
+            INSERT INTO raforka_updated.eigendur_eininga (heiti)
+            SELECT DISTINCT(oe.eigandi)
+            FROM raforka_legacy.orku_einingar oe;
+"""))
         
 ############Migrate orku_einingar############
         connection.execute(text("""
@@ -18,10 +23,9 @@ def migrate_data():
 """))
         connection.execute(text("""
             INSERT INTO raforka_updated.orku_einingar
-            (heiti, tegund, ar_uppsett, "X_HNIT", "Y_HNIT")
+            (heiti, ar_uppsett, "X_HNIT", "Y_HNIT")
             SELECT
                 heiti,
-                tegund,
                 MAKE_DATE(ar_uppsett, manudir_uppsett, dagur_uppsett),
                 CAST("X_HNIT" AS DECIMAL(9,6)),
                 CAST("Y_HNIT" AS DECIMAL(9,6))
@@ -36,7 +40,7 @@ def migrate_data():
 """))
         connection.execute(text("""
             UPDATE raforka_updated.orku_einingar new
-            SET tengd_stod = m2.new_id
+            SET stod = m2.new_id
             FROM raforka_legacy.orku_einingar old
             JOIN id_map m1 ON old.id = m1.old_id
 
@@ -51,13 +55,35 @@ def migrate_data():
         connection.execute(text("""
             UPDATE raforka_updated.orku_einingar new
             SET eigandi_id = e.id
-            FROM raforka_updated.eigendur_eininga e
-            JOIN id_map m ON new_id = m.new_id
+            FROM id_map m
             JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
-            WHERE e.heiti = old.eigandi;
-"""))       
-
-        
+            JOIN raforka_updated.eigendur_eininga e ON e.heiti = old.eigandi 
+            WHERE new.id = m.new_id;
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.stodvar
+            (id, tegund_stod)
+            SELECT
+                new.id,
+                old.tegund_stod
+            FROM
+            raforka_updated.orku_einingar new
+            JOIN id_map m ON m.new_id = new.id
+            JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
+            WHERE old.tegund = 'stod'
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.virkjanir
+            (id, tegund_stod)
+            SELECT
+                new.id,
+                old.tegund_stod
+            FROM
+            raforka_updated.orku_einingar new
+            JOIN id_map m ON m.new_id = new.id
+            JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
+            WHERE old.tegund = 'virkjun'
+"""))
 
 
 

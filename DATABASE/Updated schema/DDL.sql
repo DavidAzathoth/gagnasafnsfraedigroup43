@@ -3,6 +3,7 @@
 
 DROP TABLE IF EXISTS
     raforka_updated.eigendur_notenda,
+    raforka_updated.eigendur_eininga,
     raforka_updated.notendur_skraning,
     raforka_updated.orku_einingar,
     raforka_updated.stodvar,
@@ -76,7 +77,7 @@ CREATE TABLE raforka_updated.orku_maelingar (
     tegund VARCHAR(11) CHECK (
         LOWER(tegund) IN ('framleiðsla', 'innmötun', 'úttekt')),
     timi timestamp without time zone,
-    gildi_kwh numeric,
+    gildi_kwh numeric
 );
 
 
@@ -160,6 +161,12 @@ from raforka_updated.orku_einingar;
 
 select *
 from raforka_legacy.orku_einingar;
+
+select *
+from raforka_updated.stodvar;
+
+select *
+from raforka_updated.virkjanir;
 
 select * 
 from raforka_legacy.orku_maelingar
