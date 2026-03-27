@@ -40,30 +40,37 @@ CREATE TABLE raforka_updated.notendur_skraning (
     "Y_HNIT" decimal(9, 6) NOT NULL,
     eigandi_id int REFERENCES raforka_updated.eigendur_notenda(id),
 
-    CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE)),
+    CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE))
 );
 
 
 CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
-    tegund VARCHAR(7) NOT NULL CHECK(LOWER(tegund) IN ('stod', 'virkjun')),
     eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
     ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
-    tengd_stod int NULL,
-    FOREIGN KEY (tengd_stod) REFERENCES raforka_updated.orku_einingar(id)
+    stod int REFERENCES raforka_updated.orku_einingar(id),
+    CHECK (stod <> id)
 );
 
 CREATE TABLE raforka_updated.stodvar (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
+    tegund_stod VARCHAR(50) DEFAULT 'Aðveitustöð'
 );
 
 CREATE TABLE raforka_updated.virkjanir (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
+    tegund_stod VARCHAR(50)
 );
 
+CREATE TABLE raforka_updated.tengingar (
+    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fra_eining int REFERENCES raforka_updated.orku_einingar(id),
+    til_eining int REFERENCES raforka_updated.orku_einingar(id),
+    CHECK (fra_eining <> til_eining)
+);
 
 CREATE TABLE raforka_updated.orku_maelingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -72,26 +79,29 @@ CREATE TABLE raforka_updated.orku_maelingar (
         LOWER(tegund) IN ('framleiðsla', 'innmötun', 'úttekt')),
     timi timestamp without time zone,
     gildi_kwh numeric,
-    notandi_id int REFERENCES raforka_updated.notendur_skraning(id),
-    stod int REFERENCES raforka_updated.orku_einingar(id)
 );
 
 
-/*delete this*/
+
 CREATE TABLE raforka_updated.uttekt (
-    maeling_id int PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
-    notandi_id int NOT NULL REFERENCES raforka_updated.notendur_skraning(id)
+    maeling_id int PRIMARY KEY 
+        REFERENCES raforka_updated.orku_maelingar(id),
+    notandi_id int NOT NULL 
+        REFERENCES raforka_updated.notendur_skraning(id)
 );
 
 CREATE TABLE raforka_updated.framleidsla (
-    maeling_id int PRIMARY KEY REFERENCES raforka_updated.orku_maelingar(id),
-    virkjun_id int NOT NULL REFERENCES raforka_updated.orku_einingar(id)
+    maeling_id int PRIMARY KEY 
+        REFERENCES raforka_updated.orku_maelingar(id),
+    virkjun_id int NOT NULL 
+        REFERENCES raforka_updated.virkjanir(id)
 );
 
 CREATE TABLE raforka_updated.innmotun (
-    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    maeling_id int NOT NULL REFERENCES raforka_updated.orku_maelingar(id),
-    stod int NOT NULL REFERENCES raforka_updated.orku_einingar(id)
+    maeling_id int PRIMARY KEY 
+        REFERENCES raforka_updated.orku_maelingar(id),
+    stod_id int NOT NULL
+        REFERENCES raforka_updated.stodvar(id)
 );
 
 
