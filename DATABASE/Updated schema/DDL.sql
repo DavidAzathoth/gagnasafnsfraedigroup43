@@ -48,12 +48,13 @@ CREATE TABLE raforka_updated.notendur_skraning (
 CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
+    tegund VARCHAR(100),
     eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
     ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
-    stod int REFERENCES raforka_updated.orku_einingar(id),
-    CHECK (stod <> id)
+    tengd_stod int REFERENCES raforka_updated.orku_einingar(id),
+    CHECK (tengd_stod <> id)
 );
 
 --------------------------
@@ -155,7 +156,33 @@ CREATE TABLE raforka_updated.uttekt (
 
     WHERE new.id = m1.new_id;
 
+EXPLAIN ANALYZE
+select om.id, oe.heiti, om.tegund, 
+CASE
+WHEN om.tegund = 'Framleiðsla' THEN ee.heiti
+WHEN om.tegund = 'Innmötun' THEN (
+    SELECT oe1.heiti
+    FROM raforka_updated.orku_einingar oe1
+    JOIN raforka_updated.eigendur_eininga ee1 ON ee1.id = oe1.eigandi_id
+    WHERE oe1.id = oe.tengd_stod
+)
+ELSE (
+    SELECT oe2.heiti
+    FROM raforka_updated.orku_einingar oe2
+    WHERE oe2.heiti = 'S3_Vestmannaeyjar'
+)
+END as "sendandi_maelingar",
+om.timi, om.gildi_kwh
+from raforka_updated.orku_maelingar om
+join raforka_updated.orku_einingar oe ON oe.id = om.eining_id
+JOIN raforka_updated.eigendur_eininga ee ON ee.id = oe.eigandi_id
+ORDER BY om.id
+LIMIT 1000;
 
+EXPLAIN ANALYZE
+select * 
+from raforka_legacy.orku_maelingar
+LIMIT 1000;
 select * 
 from raforka_updated.orku_einingar;
 
@@ -168,8 +195,35 @@ from raforka_updated.stodvar;
 select *
 from raforka_updated.virkjanir;
 
-select * 
-from raforka_legacy.orku_maelingar
-LIMIT 100;
 
 -- Task D1
+EXPLAIN ANALYZE
+SELECT 
+    om.id,
+    oe.heiti,
+    om.tegund,
+
+    CASE
+        WHEN om.tegund = 'Framleiðsla' THEN ee.heiti
+        WHEN om.tegund = 'Innmötun' THEN ee_s.heiti
+        ELSE 'S3_Vestmannaeyjar'
+    END AS sendandi_maelingar,
+
+    om.timi,
+    om.gildi_kwh
+
+FROM raforka_updated.orku_maelingar om
+
+JOIN raforka_updated.orku_einingar oe 
+    ON oe.id = om.eining_id
+
+JOIN raforka_updated.eigendur_eininga ee 
+    ON ee.id = oe.eigandi_id
+
+LEFT JOIN raforka_updated.orku_einingar oe_s
+    ON oe.tengd_stod = oe_s.id
+
+LEFT JOIN raforka_updated.eigendur_eininga ee_s
+    ON ee_s.id = oe_s.eigandi_id
+
+LIMIT 100000;

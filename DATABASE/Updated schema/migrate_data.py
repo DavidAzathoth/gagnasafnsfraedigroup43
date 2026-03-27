@@ -61,6 +61,41 @@ def migrate_data():
             JOIN raforka_updated.eigendur_eininga e ON e.heiti = old.eigandi 
             WHERE new.id = m.new_id;
 """))
+        
+#######Migrate notendur#######
+        connection.execute(text("""
+            INSERT INTO raforka_updated.eigendur_notenda
+            (kennitala, heiti)
+            SELECT
+                kennitala,
+                eigandi
+            FROM raforka_legacy.notendur_skraning
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.notendur_skraning
+            (heiti, ar_stofnad, "X_HNIT", "Y_HNIT", eigandi_id)
+            SELECT
+                old.heiti,
+                old.ar_stofnad,
+                CAST(old."X_HNIT" AS DECIMAL(9,6)),
+                CAST(old."Y_HNIT" AS DECIMAL(9,6)),
+                en.id
+            FROM raforka_legacy.notendur_skraning old
+            JOIN raforka_updated.eigendur_notenda en ON en.kennitala = old.kennitala
+"""))
+###########Migrate orkumaelingar###########
+        connection.execute(text("""
+            INSERT INTO raforka_updated.orku_maelingar
+            (eining_id, tegund, timi, gildi_kwh)
+            SELECT
+                oe.id,
+                old.tegund_maelingar,
+                old.timi,
+                old.gildi_kwh
+            FROM raforka_legacy.orku_maelingar old
+            JOIN raforka_updated.orku_einingar oe ON oe.heiti = old.eining_heiti
+"""))
+        
 
 
 
