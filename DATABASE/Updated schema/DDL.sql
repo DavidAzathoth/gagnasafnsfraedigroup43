@@ -1,9 +1,5 @@
 -- Task C3
 
-DROP TABLE IF EXISTS raforka_updated.eiganda_skraning;
-DROP TABLE IF EXISTS notendur_skraning;
-DROP TABLE IF EXISTS orku_einingar;
-DROP TABLE IF EXISTS orku_maelingar;
 
 DROP TABLE IF EXISTS
     raforka_updated.eigendur_notenda,
