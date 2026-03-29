@@ -84,22 +84,35 @@ def migrate_data():
             JOIN raforka_updated.eigendur_notenda en ON en.kennitala = old.kennitala
 """))
 ###########Migrate orkumaelingar###########
+
+#Add old_id for reference
+        connection.execute(text("""
+            ALTER TABLE raforka_updated.orku_maelingar
+            ADD COLUMN old_id INT;
+"""))
         connection.execute(text("""
             INSERT INTO raforka_updated.orku_maelingar
-            (eining_id, tegund, timi, gildi_kwh)
+            (eining_id, tegund, timi, gildi_kwh, old_id)
             SELECT
                 oe.id,
                 old.tegund_maelingar,
                 old.timi,
-                old.gildi_kwh
+                old.gildi_kwh,
+                old.id
             FROM raforka_legacy.orku_maelingar old
             JOIN raforka_updated.orku_einingar oe ON oe.heiti = old.eining_heiti
 """))
+
+#######Migrate to uttekt#######
+        connection.execute(text("""
+            INSERT INTO raforka_updated.uttekt
+            (maeling_id, notandi_id)
+            SELECT om.id, ns.id
+            FROM raforka_updated.orku_maelingar om
+            JOIN raforka_legacy.orku_maelingar oldom ON oldom.id = om.old_id
+            JOIN raforka_updated.eigendur_notenda en ON en.heiti = oldom.notandi_heiti 
+            JOIN raforka_updated.notendur_skraning ns ON ns.eigandi_id = en.id
+"""))
         
-
-
-
-
-
 if __name__ == "__main__":
     migrate_data()
