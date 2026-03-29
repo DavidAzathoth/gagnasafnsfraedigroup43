@@ -121,11 +121,11 @@ CREATE TABLE raforka_updated.uttekt (
 
     --2
     INSERT INTO raforka_updated.orku_einingar
-    (heiti, tegund, eigandi, ar_uppsett, "X_HNIT", "Y_HNIT")
+    (heiti, tegund, eigandi_id, ar_uppsett, "X_HNIT", "Y_HNIT")
     SELECT
         heiti,
         tegund,
-        eigandi,
+        eigandi_id,
         MAKE_DATE(ar_uppsett, manudir_uppsett, dagur_uppsett),
         CAST("X_HNIT" AS DECIMAL(9,6)),
         CAST("Y_HNIT" AS DECIMAL(9,6))
@@ -180,14 +180,16 @@ ORDER BY om.id
 LIMIT 1000;
 
 EXPLAIN ANALYZE
+select *
+from raforka_legacy.orku_einingar;
+
 select * 
 from raforka_legacy.orku_maelingar
 LIMIT 1000;
+
 select * 
 from raforka_updated.orku_einingar;
 
-select *
-from raforka_legacy.orku_einingar;
 
 select *
 from raforka_updated.stodvar;
