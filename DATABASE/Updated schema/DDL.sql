@@ -301,3 +301,7 @@ LEFT JOIN raforka_updated.eigendur_eininga ee_s
 
 LIMIT 100000;
 -- Task D1
+CREATE INDEX idx_orku_maelingar_timi ON raforka_updated.orku_maelingar(timi);
+CREATE INDEX idx_orku_maelingar_eining_id ON raforka_updated.orku_maelingar(eining_id);
+CREATE INDEX idx_uttekt_notandi_id ON raforka_updated.uttekt(notandi_id);
+CREATE INDEX idx_notendur_skraning_eigandi_id ON raforka_updated.notendur_skraning(eigandi_id);
