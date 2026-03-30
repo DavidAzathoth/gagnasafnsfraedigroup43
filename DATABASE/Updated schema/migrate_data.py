@@ -7,15 +7,112 @@ def migrate_data():
     engine = create_engine(DATABASE_URL)
 
     with engine.begin() as connection:
-        
-
+##########Migrate eigendur_eininga############
         connection.execute(text("""
-            ....
+            INSERT INTO raforka_updated.eigendur_eininga (heiti)
+            SELECT DISTINCT(oe.eigandi)
+            FROM raforka_legacy.orku_einingar oe;
+"""))
+        
+############Migrate orku_einingar############
+        connection.execute(text("""
+            CREATE TEMP TABLE id_map (
+                old_id INT,
+                new_id INT
+        );
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.orku_einingar
+            (heiti, tegund, ar_uppsett, "X_HNIT", "Y_HNIT")
+            SELECT
+                heiti,
+                tegund,
+                MAKE_DATE(ar_uppsett, manudir_uppsett, dagur_uppsett),
+                CAST("X_HNIT" AS DECIMAL(9,6)),
+                CAST("Y_HNIT" AS DECIMAL(9,6))
+            FROM raforka_legacy.orku_einingar;
+"""))
+        connection.execute(text("""
+            INSERT INTO id_map (old_id, new_id)
+            SELECT old.id, new.id
+            FROM raforka_legacy.orku_einingar old
+            JOIN raforka_updated.orku_einingar new
+            ON old.heiti = new.heiti;
+"""))
+        connection.execute(text("""
+            UPDATE raforka_updated.orku_einingar new
+            SET tengd_stod = m2.new_id
+            FROM raforka_legacy.orku_einingar old
+            JOIN id_map m1 ON old.id = m1.old_id
+
+            LEFT JOIN raforka_legacy.orku_einingar ref
+                ON old.tengd_stod = ref.heiti
+
+            LEFT JOIN id_map m2
+                ON ref.id = m2.old_id
+
+            WHERE new.id = m1.new_id;
+"""))
+        connection.execute(text("""
+            UPDATE raforka_updated.orku_einingar new
+            SET eigandi_id = e.id
+            FROM id_map m
+            JOIN raforka_legacy.orku_einingar old ON old.id = m.old_id
+            JOIN raforka_updated.eigendur_eininga e ON e.heiti = old.eigandi 
+            WHERE new.id = m.new_id;
+"""))
+        
+#######Migrate notendur#######
+        connection.execute(text("""
+            INSERT INTO raforka_updated.eigendur_notenda
+            (kennitala, heiti)
+            SELECT
+                kennitala,
+                eigandi
+            FROM raforka_legacy.notendur_skraning
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.notendur_skraning
+            (heiti, ar_stofnad, "X_HNIT", "Y_HNIT", eigandi_id)
+            SELECT
+                old.heiti,
+                old.ar_stofnad,
+                CAST(old."X_HNIT" AS DECIMAL(9,6)),
+                CAST(old."Y_HNIT" AS DECIMAL(9,6)),
+                en.id
+            FROM raforka_legacy.notendur_skraning old
+            JOIN raforka_updated.eigendur_notenda en ON en.kennitala = old.kennitala
+"""))
+###########Migrate orkumaelingar###########
+
+#Add old_id for reference
+        connection.execute(text("""
+            ALTER TABLE raforka_updated.orku_maelingar
+            ADD COLUMN old_id INT;
+"""))
+        connection.execute(text("""
+            INSERT INTO raforka_updated.orku_maelingar
+            (eining_id, tegund, timi, gildi_kwh, old_id)
+            SELECT
+                oe.id,
+                old.tegund_maelingar,
+                old.timi,
+                old.gildi_kwh,
+                old.id
+            FROM raforka_legacy.orku_maelingar old
+            JOIN raforka_updated.orku_einingar oe ON oe.heiti = old.eining_heiti
 """))
 
+#######Migrate to uttekt#######
+        connection.execute(text("""
+            INSERT INTO raforka_updated.uttekt
+            (maeling_id, notandi_id)
+            SELECT om.id, ns.id
+            FROM raforka_updated.orku_maelingar om
+            JOIN raforka_legacy.orku_maelingar oldom ON oldom.id = om.old_id
+            JOIN raforka_updated.eigendur_notenda en ON en.heiti = oldom.notandi_heiti 
+            JOIN raforka_updated.notendur_skraning ns ON ns.eigandi_id = en.id
+"""))
         
-
-
-
 if __name__ == "__main__":
     migrate_data()
