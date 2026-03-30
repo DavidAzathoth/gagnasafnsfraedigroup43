@@ -76,53 +76,6 @@ CREATE TABLE raforka_updated.uttekt (
 );
 
 
-------------------------  DELETE ?? --------------------------------------------------
- /*    --1
-    CREATE TEMP TABLE id_map (
-        old_id INT,
-        new_id INT
-    );
-
-
-    --2
-    INSERT INTO raforka_updated.orku_einingar
-    (heiti, tegund, eigandi_id, ar_uppsett, "X_HNIT", "Y_HNIT")
-    SELECT
-        heiti,
-        tegund,
-        eigandi_id,
-        MAKE_DATE(ar_uppsett, manudir_uppsett, dagur_uppsett),
-        CAST("X_HNIT" AS DECIMAL(9,6)),
-        CAST("Y_HNIT" AS DECIMAL(9,6))
-    FROM raforka_legacy.orku_einingar
-    RETURNING id;
-
-
-    --3
-    INSERT INTO id_map (old_id, new_id)
-    SELECT old.id, new.id
-    FROM raforka_legacy.orku_einingar old
-    JOIN raforka_updated.orku_einingar new
-    ON old.heiti = new.heiti;
-
-    --4
-    UPDATE raforka_updated.orku_einingar new
-    SET tengd_stod = m2.new_id
-    FROM raforka_legacy.orku_einingar old
-    JOIN id_map m1 ON old.id = m1.old_id
-
-    -- find the referenced row by name
-    LEFT JOIN raforka_legacy.orku_einingar ref
-        ON old.tengd_stod = ref.heiti
-
-    -- map that referenced row to new_id
-    LEFT JOIN id_map m2
-        ON ref.id = m2.old_id
-
-    WHERE new.id = m1.new_id; */
-
---------------------------------------------------------------------------------------
-
 
 
 -- Task D1
