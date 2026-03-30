@@ -17,7 +17,8 @@ SELECT
     SUM(om.gildi_kwh) as total_kwh
 FROM raforka_updated.orku_maelingar om
 JOIN raforka_updated.orku_einingar oe ON oe.id = om.eining_id
-WHERE EXTRACT(year FROM timi) = 2025
+WHERE timi >= DATE '2025-01-01'
+    AND timi <  DATE '2026-01-01'
 GROUP BY
     oe.heiti,
     EXTRACT(year FROM timi),
@@ -42,7 +43,8 @@ JOIN raforka_updated.orku_maelingar om ON om.id = ut.maeling_id
 JOIN raforka_updated.orku_einingar oe ON oe.id = om.eining_id
 JOIN raforka_updated.notendur_skraning ns ON ns.id = ut.notandi_id
 JOIN raforka_updated.eigendur_notenda en ON en.id = ns.eigandi_id
-WHERE EXTRACT(year FROM timi) = 2025
+WHERE timi >= DATE '2025-01-01'
+    AND timi <  DATE '2026-01-01'
 GROUP BY
     oe.heiti,
     EXTRACT(year FROM timi),
@@ -68,7 +70,8 @@ SELECT
     SUM(gildi_kwh) FILTER (WHERE om.tegund = 'Úttekt') AS withdrawal_kwh
 FROM raforka_updated.orku_maelingar om
 JOIN raforka_updated.orku_einingar oe ON oe.id = om.eining_id
-WHERE EXTRACT(YEAR FROM om.timi) = 2025
+WHERE timi >= DATE '2025-01-01'
+    AND timi <  DATE '2026-01-01'
 GROUP BY
     oe.heiti,
     EXTRACT(YEAR FROM om.timi),
