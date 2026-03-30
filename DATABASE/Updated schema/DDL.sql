@@ -12,12 +12,12 @@ DROP TABLE IF EXISTS
     raforka_updated.uttekt,
     raforka_updated.framleidsla,
     raforka_updated.innmotun
-    CASCADE
+    CASCADE;
 
 --
 -- Name: raforka_; Type: SCHEMA; Schema: -; Owner: bjarki1312
 --
-
+DROP SCHEMA IF EXISTS raforka_updated;
 CREATE SCHEMA raforka_updated;
 
 

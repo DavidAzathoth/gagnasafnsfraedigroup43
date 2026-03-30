@@ -6,7 +6,6 @@ SELECT schemaname, tablename, indexname
 FROM pg_indexes
 WHERE schemaname = 'raforka_updated';
 
-drop index raforka_updated.idx_orku_maelingar_eining_id;
 
 -- Querie 1
 SELECT
