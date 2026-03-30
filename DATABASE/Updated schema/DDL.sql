@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS
 --
 -- Name: raforka_; Type: SCHEMA; Schema: -; Owner: bjarki1312
 --
+
 CREATE SCHEMA raforka_updated;
 
 
@@ -44,13 +45,12 @@ CREATE TABLE raforka_updated.notendur_skraning (
     CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE))
 );
 
-
 CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
     tegund VARCHAR(100),
     eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
-    ar_uppsett DATE NOT NULL,
+    ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
     tengd_stod int REFERENCES raforka_updated.orku_einingar(id),
