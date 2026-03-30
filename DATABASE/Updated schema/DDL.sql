@@ -305,7 +305,7 @@ LIMIT 100000;
 
 
 -- Task D1
-DROP INDEX IF EXISTS raforka_updated.idx_orku_maelingar_timi_eining_id
+DROP INDEX IF EXISTS raforka_updated.idx_orku_maelingar_timi_eining_id;
 DROP INDEX IF EXISTS raforka_updated.idx_uttekt_notandi_id;
 DROP INDEX IF EXISTS raforka_updated.idx_notendur_skraning_eigandi_id;
 
