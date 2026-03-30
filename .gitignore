@@ -6,3 +6,4 @@ API/Legacy api/app/services/__pycache__/service.cpython-311.pyc
 /API/.venv
 /API/Legacy api/app/services/__pycache__
 /.venv
+*.pyc
