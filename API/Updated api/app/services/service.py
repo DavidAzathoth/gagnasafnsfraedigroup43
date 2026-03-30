@@ -51,36 +51,37 @@ def get_monthly_energy_flow_data(
     from_date: datetime,
     to_date: datetime
 ):
-    from_month = from_date.month
-    to_month = to_date.month
-    from_year = from_date.year
-    to_year = to_date.year
-    query = """
-    SELECT * 
-    FROM raforka_updated.monthly_energy_flow_data
-    WHERE :from_month <= month AND month <= :to_month
-    AND :from_year <= year AND year <= :to_year
-    """
-    rows = db.execute(
-        text(query),
-            {
-                "from_month": from_month,
-                "to_month": to_month,
-                "from_year": from_year,
-                "to_year": to_year
-            }
-        ).mappings().all()
+    try:
+        query = """
+        SELECT * 
+        FROM raforka_updated.monthly_energy_flow_data
+        WHERE MAKE_DATE(year::int, month::int, 1)
+            BETWEEN :from_date AND :to_date
+        """
+        rows = db.execute(
+            text(query),
+                {
+                    "from_date": from_date,
+                    "to_date": to_date
+                }
+            ).mappings().all()
 
-    return [
-        MonthlyPlantEnergyFlowModel(
-            power_plant_source = row.power_plant_source,
-            measurement_type = row.measurement_type,
-            year = row.year,
-            month = row.month,
-            total_kwh = row.total_kwh
+        return [
+            MonthlyPlantEnergyFlowModel(
+                power_plant_source = row.power_plant_source,
+                measurement_type = row.measurement_type,
+                year = row.year,
+                month = row.month,
+                total_kwh = row.total_kwh
+            )
+            for row in rows
+        ]
+    except Exception as error:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
         )
-        for row in rows
-    ]
 
 '''
 Service 2: get_monthly_company_usage_data()
@@ -91,36 +92,37 @@ def get_monthly_company_usage_data(
         from_date: datetime,
         to_date: datetime
 ):
-    from_month = from_date.month
-    to_month = to_date.month
-    from_year = from_date.year
-    to_year = to_date.year
     query = """
     SELECT *
     FROM raforka_updated.yearly_usage_by_company
-    WHERE :from_month <= month AND month <= :to_month
-    AND :from_year <= year AND year <= :to_year
+    WHERE MAKE_DATE(year::int, month::int, 1)
+        BETWEEN :from_date AND :to_date
 """
-    rows = db.execute(
-        text(query),
-            {
-                "from_month": from_month,
-                "to_month": to_month,
-                "from_year": from_year,
-                "to_year": to_year
-            }
-        ).mappings().all()
+    try:
+        rows = db.execute(
+            text(query),
+                {
+                    "from_date": from_date,
+                    "to_date": to_date
+                }
+            ).mappings().all()
 
-    return [
-        MonthlyCompanyUsageModel(
-            power_plant_source = row.power_plant_source,
-            customer_name = row.customer_name,
-            year = row.year,
-            month = row.month,
-            total_kwh = row.total_kwh
+        return [
+            MonthlyCompanyUsageModel(
+                power_plant_source = row.power_plant_source,
+                customer_name = row.customer_name,
+                year = row.year,
+                month = row.month,
+                total_kwh = row.total_kwh
+            )
+            for row in rows
+        ]
+    except Exception as error:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
         )
-        for row in rows
-    ]
 
 '''
 Service 3: get_monthly_plant_loss_ratios_data()
@@ -131,28 +133,23 @@ def get_monthly_plant_loss_ratios_data(
         from_date: datetime,
         to_date: datetime
 ):
-    from_month = from_date.month
-    to_month = to_date.month
-    from_year = from_date.year
-    to_year = to_date.year
+
     query = """
     SELECT
         power_plant_source,
         AVG((production_kwh - inflow_kwh) / production_kwh) AS plant_to_sub_loss_ratio,
         AVG((production_kwh - withdrawal_kwh) / production_kwh) AS total_system_loss_ratio
     FROM raforka_updated.montly_power_plant_energy_view
-    WHERE :from_month <= month AND month <= :to_month
-    AND :from_year <= year AND year <= :to_year
+    WHERE MAKE_DATE(year::int, month::int, 1)
+        BETWEEN :from_date AND :to_date
     GROUP BY power_plant_source
     ORDER BY power_plant_source ASC;
 """
     rows = db.execute(
         text(query),
             {
-                "from_month": from_month,
-                "to_month": to_month,
-                "from_year": from_year,
-                "to_year": to_year
+                "from_date": from_date,
+                "to_date": to_date,
             }
         ).mappings().all()
 
@@ -303,7 +300,7 @@ async def insert_measurement_data(
     db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.monthly_energy_flow_data"))
     db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.yearly_usage_by_company"))
     db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.montly_power_plant_energy_view"))
-    db.commit() #uptade materialized views
+    db.commit() #update materialized views
 # Task F1
 
 
