@@ -44,7 +44,9 @@ CREATE TABLE raforka_updated.notendur_skraning (
     CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE))
 );
 
-
+select *
+from raforka_updated.orku_einingar
+limit 100
 CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
