@@ -296,13 +296,16 @@ async def insert_measurement_data(
                 except Exception:
                     db.rollback()
                     continue
-            db.rollback() #test
             db.commit()
-        db.rollback() #test
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.monthly_energy_flow_data"))
+    db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.yearly_usage_by_company"))
+    db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.montly_power_plant_energy_view"))
+    db.commit() #uptade materialized views
 # Task F1
+
 
 '''
 Service 5: get_substations_gridflow_data()
