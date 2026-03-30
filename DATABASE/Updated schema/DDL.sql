@@ -57,20 +57,6 @@ CREATE TABLE raforka_updated.orku_einingar (
     CHECK (tengd_stod <> id)
 );
 
---------------------------
---delete?
---------------------------
-
--- CREATE TABLE raforka_updated.stodvar (
---     id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
---     tegund_stod VARCHAR(50) DEFAULT 'Aðveitustöð'
--- );
-
--- CREATE TABLE raforka_updated.virkjanir (
---     id int PRIMARY KEY REFERENCES raforka_updated.orku_einingar(id),
---     tegund_stod VARCHAR(50)
--- );
-
 
 CREATE TABLE raforka_updated.orku_maelingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -89,64 +75,9 @@ CREATE TABLE raforka_updated.uttekt (
         REFERENCES raforka_updated.notendur_skraning(id)
 );
 
-select om.id, om.eining_id, om.tegund, om.timi, om.gildi_kwh
-from raforka_updated.orku_maelingar om
-where om.tegund = 'Úttekt'
-limit 10;
 
-EXPLAIN ANALYZE
-select *
-from raforka_legacy.orku_maelingar
-where tegund_maelingar = 'Úttekt'
-limit 100000;
-
-CREATE INDEX ON raforka_updated.orku_maelingar(eining_id)
-CREATE INDEX ON raforka_updated.notendur_skraning(eigandi_id)
-CREATE INDEX ON raforka_updated.orku_einingar(eigandi_id)
-
-CREATE INDEX ON raforka_updated.uttekt(maeling_id)
-CREATE INDEX ON raforka_updated.uttekt(notandi_id)
-EXPLAIN ANALYZE
-select om.id, oe.heiti, om.tegund, CASE
-WHEN om.tegund = 'Framleiðsla' THEN ee.heiti
-WHEN om.tegund = 'Innmötun' THEN (
-    oe1.heiti
-)
-ELSE (
-    SELECT oe2.heiti
-    FROM raforka_updated.orku_einingar oe2
-    WHERE oe2.heiti = 'S3_Vestmannaeyjar'
-)
-END as "sendandi_maelingar", om.timi, om.gildi_kwh, en.heiti as notandi
-from raforka_updated.uttekt ut
-JOIN raforka_updated.orku_maelingar om ON om.id = ut.maeling_id
-JOIN raforka_updated.orku_einingar oe ON oe.id = om.eining_id
-JOIN raforka_updated.notendur_skraning ns ON ns.id = ut.notandi_id
-JOIN raforka_updated.eigendur_notenda en ON en.id = ns.eigandi_id
-JOIN raforka_updated.eigendur_eininga ee ON ee.id = oe.eigandi_id
-JOIN raforka_updated.orku_einingar oe1 ON oe1.id = oe.tengd_stod
-limit 1000
-----------------
---delete?
-----------------
-
--- CREATE TABLE raforka_updated.framleidsla (
---     maeling_id int PRIMARY KEY 
---         REFERENCES raforka_updated.orku_maelingar(id),
---     virkjun_id int NOT NULL 
---         REFERENCES raforka_updated.virkjanir(id)
--- );
-
--- CREATE TABLE raforka_updated.innmotun (
---     maeling_id int PRIMARY KEY 
---         REFERENCES raforka_updated.orku_maelingar(id),
---     stod_id int NOT NULL
---         REFERENCES raforka_updated.stodvar(id)
--- );
-
-
-----------------------------------------------------------------
-    --1
+------------------------  DELETE ?? --------------------------------------------------
+ /*    --1
     CREATE TEMP TABLE id_map (
         old_id INT,
         new_id INT
@@ -188,120 +119,10 @@ limit 1000
     LEFT JOIN id_map m2
         ON ref.id = m2.old_id
 
-    WHERE new.id = m1.new_id;
+    WHERE new.id = m1.new_id; */
 
+--------------------------------------------------------------------------------------
 
-
-EXPLAIN ANALYZE
-select om.id, oe.heiti, om.tegund, 
-CASE
-WHEN om.tegund = 'Framleiðsla' THEN ee.heiti
-WHEN om.tegund = 'Innmötun' THEN (
-    oe1.heiti
-)
-ELSE (
-    SELECT oe2.heiti
-    FROM raforka_updated.orku_einingar oe2
-    WHERE oe2.heiti = 'S3_Vestmannaeyjar'
-)
-END as "sendandi_maelingar",
-om.timi, om.gildi_kwh
-from raforka_updated.orku_maelingar om
-join raforka_updated.orku_einingar oe ON oe.id = om.eining_id
-JOIN raforka_updated.eigendur_eininga ee ON ee.id = oe.eigandi_id
-JOIN raforka_updated.orku_einingar oe1 ON oe1.id = oe.id
-ORDER BY om.id
-limit 1000
-
-
-select *
-from raforka_updated.orku_maelingar
-limit 100
-
-
-select *
-from raforka_legacy.orku_maelingar
-limit 1000
-where id = 1
-
-EXPLAIN ANALYZE
-select *
-from raforka_legacy.orku_einingar;
-
-select * 
-from raforka_legacy.orku_maelingar
-LIMIT 1000;
-
-select * 
-from raforka_updated.orku_einingar;
-
-
-select *
-from raforka_updated.stodvar;
-
-select *
-from raforka_updated.virkjanir;
-
-select *
-from raforka_legacy.orku_maelingar om
-where om.tegund_maelingar = 'Úttekt'
-ORDER BY om.id
-limit 10;
-
-SELECT om.id, oldoe.eining_heiti, oldoe.id, oldoe.notandi_heiti, om.gildi_kwh
-FROM raforka_updated.orku_maelingar om
-JOIN raforka_legacy.orku_maelingar oldoe
-ON oldoe.timi = om.timi
-AND oldoe.gildi_kwh = om.gildi_kwh
-WHERE om.tegund = 'Úttekt'
-ORDER BY om.id
-limit 10
-
-
-EXPLAIN ANALYZE
-SELECT 
-    om.id,
-    oe.heiti,
-    om.tegund,
-
-    CASE
-        WHEN om.tegund = 'Framleiðsla' THEN ee.heiti
-        WHEN om.tegund = 'Innmötun' THEN ee_s.heiti
-        ELSE 'S3_Vestmannaeyjar'
-    END AS sendandi_maelingar,
-
-    om.timi,
-    om.gildi_kwh
-
-select *
-from raforka_updated.orku_einingar
-FROM raforka_updated.orku_maelingar om
-
-select *
-from raforka_updated.orku_maelingar
-where old_id = 302;
-
-select *
-from raforka_legacy.orku_maelingar
-where id = 302;
-SELECT COUNT(*) 
-FROM raforka_updated.orku_maelingar;
-
-SELECT COUNT(*)
-from raforka_legacy.orku_maelingar;
-JOIN raforka_updated.orku_einingar oe 
-    ON oe.id = om.eining_id
-
-JOIN raforka_updated.eigendur_eininga ee 
-    ON ee.id = oe.eigandi_id
-
-LEFT JOIN raforka_updated.orku_einingar oe_s
-    ON oe.tengd_stod = oe_s.id
-
-LEFT JOIN raforka_updated.eigendur_eininga ee_s
-    ON ee_s.id = oe_s.eigandi_id
-
-LIMIT 100000;
 
 
 -- Task D1
