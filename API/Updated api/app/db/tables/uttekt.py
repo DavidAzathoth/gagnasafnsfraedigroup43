@@ -5,5 +5,5 @@ class Uttekt(Base):
     __tablename__ = "uttekt"
     __table_args__ = {"schema": "raforka_updated"}
 
-    mealing_id = Column(Integer, ForeignKey("raforka_updated.orkumaelingar.id"), primary_key=True)
+    maeling_id = Column(Integer, ForeignKey("raforka_updated.orku_maelingar.id"), primary_key=True)
     notandi_id =Column(Integer, ForeignKey("raforka_updated.notendur_skraning.id"), nullable=False)
