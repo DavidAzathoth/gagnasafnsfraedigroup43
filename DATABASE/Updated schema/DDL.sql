@@ -44,15 +44,13 @@ CREATE TABLE raforka_updated.notendur_skraning (
     CHECK(ar_stofnad >= 1900 AND ar_stofnad <= EXTRACT(YEAR FROM CURRENT_DATE))
 );
 
-select *
-from raforka_updated.orku_einingar
-limit 100
+
 CREATE TABLE raforka_updated.orku_einingar (
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     heiti VARCHAR(100) NOT NULL,
     tegund VARCHAR(100),
     eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
-    ar_uppsett int NOT NULL,
+    ar_uppsett DATE NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
     tengd_stod int REFERENCES raforka_updated.orku_einingar(id),
@@ -192,6 +190,8 @@ limit 1000
 
     WHERE new.id = m1.new_id;
 
+
+
 EXPLAIN ANALYZE
 select om.id, oe.heiti, om.tegund, 
 CASE
@@ -302,8 +302,18 @@ LEFT JOIN raforka_updated.eigendur_eininga ee_s
     ON ee_s.id = oe_s.eigandi_id
 
 LIMIT 100000;
+
+
 -- Task D1
+DROP INDEX IF EXISTS raforka_updated.idx_orku_maelingar_timi;
+DROP INDEX IF EXISTS raforka_updated.idx_orku_maelingar_eining_id;
+DROP INDEX IF EXISTS raforka_updated.idx_uttekt_notandi_id;
+DROP INDEX IF EXISTS raforka_updated.idx_notendur_skraning_eigandi_id;
+
+
 CREATE INDEX idx_orku_maelingar_timi ON raforka_updated.orku_maelingar(timi);
 CREATE INDEX idx_orku_maelingar_eining_id ON raforka_updated.orku_maelingar(eining_id);
 CREATE INDEX idx_uttekt_notandi_id ON raforka_updated.uttekt(notandi_id);
 CREATE INDEX idx_notendur_skraning_eigandi_id ON raforka_updated.notendur_skraning(eigandi_id);
+
+
