@@ -50,7 +50,7 @@ CREATE TABLE raforka_updated.orku_einingar (
     heiti VARCHAR(100) NOT NULL,
     tegund VARCHAR(100),
     eigandi_id int REFERENCES raforka_updated.eigendur_eininga(id),
-    ar_uppsett int NOT NULL,
+    ar_uppsett date NOT NULL,
     "X_HNIT" decimal(9, 6) NOT NULL,
     "Y_HNIT" decimal(9, 6) NOT NULL,
     tengd_stod int REFERENCES raforka_updated.orku_einingar(id),
