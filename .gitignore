@@ -24,3 +24,5 @@ API/Updated api/app/models/parsed_data/__pycache__/measurement_data.cpython-311.
 API/Updated api/app/parsers/__pycache__/parse_measurements_csv.cpython-311.pyc
 API/Updated api/app/routes/__pycache__/endpoints.cpython-311.pyc
 API/Updated api/app/services/__pycache__/service.cpython-311.pyc
+*.pyc
+**/__pycache__
