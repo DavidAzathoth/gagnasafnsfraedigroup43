@@ -294,6 +294,7 @@ async def insert_measurement_data(
                     db.rollback()
                     continue
             db.commit()
+        
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
@@ -301,6 +302,11 @@ async def insert_measurement_data(
     db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.yearly_usage_by_company"))
     db.execute(text("REFRESH MATERIALIZED VIEW raforka_updated.montly_power_plant_energy_view"))
     db.commit() #update materialized views
+    return {
+        "status": 200,
+        "rows_processed": len(parsed_rows),
+        "mode": mode
+    }
 # Task F1
 
 
