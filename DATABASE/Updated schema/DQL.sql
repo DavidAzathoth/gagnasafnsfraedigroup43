@@ -87,8 +87,6 @@ ORDER BY power_plant_source ASC;
 
 
 
-
-
 --Custom queries
 
 --For get_monthly_energy_flow_data, removing restriction on year 2025
@@ -144,7 +142,6 @@ SELECT
     SUM(gildi_kwh) FILTER (WHERE om.tegund = 'Úttekt') AS withdrawal_kwh
 FROM raforka_updated.orku_maelingar om
 JOIN raforka_updated.orku_einingar oe ON oe.id = om.eining_id
-WHERE EXTRACT(YEAR FROM om.timi) = 2025
 GROUP BY
     oe.heiti,
     EXTRACT(YEAR FROM om.timi),
