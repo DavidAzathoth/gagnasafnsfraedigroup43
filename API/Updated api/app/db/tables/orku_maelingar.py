@@ -6,7 +6,7 @@ class OrkuMaelingar(Base):
     __table_args__ = {"schema": "raforka_updated"}
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    eining_id = Column(Integer, ForeignKey("raforka_updated.orku_einingar"), nullable=False)
+    eining_id = Column(Integer, ForeignKey("raforka_updated.orku_einingar.id"), nullable=False)
     tegund = Column(String(11), CheckConstraint(
         "LOWER(tegund) IN ('framleiðsla', 'innmötun', 'úttekt')",
         name="check_tegund_valid"

@@ -6,5 +6,20 @@ API/Legacy api/app/services/__pycache__/service.cpython-311.pyc
 /API/.venv
 /API/Legacy api/app/services/__pycache__
 /.venv
-/API/Updated api/app/db/tables/__pycache__
 *.pyc
+API/Updated api/app/db/__pycache__/session.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/eigendur_eininga.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/eigendur_notenda.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/notendur_skraning.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/orku_einingar.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/orku_maelingar.cpython-311.pyc
+API/Updated api/app/db/tables/__pycache__/uttekt.cpython-311.pyc
+API/Updated api/app/models/__pycache__/eigendur_notenda_model.cpython-311.pyc
+API/Updated api/app/models/__pycache__/notendur_skraning_model.cpython-311.pyc
+API/Updated api/app/models/__pycache__/orku_einingar_model.cpython-311.pyc
+API/Updated api/app/models/__pycache__/orku_maelingar_model.cpython-311.pyc
+API/Updated api/app/models/__pycache__/uttekt_model.cpython-311.pyc
+API/Updated api/app/models/parsed_data/__pycache__/measurement_data.cpython-311.pyc
+API/Updated api/app/parsers/__pycache__/parse_measurements_csv.cpython-311.pyc
+API/Updated api/app/routes/__pycache__/endpoints.cpython-311.pyc
+API/Updated api/app/services/__pycache__/service.cpython-311.pyc
