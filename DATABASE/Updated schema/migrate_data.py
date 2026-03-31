@@ -7,6 +7,7 @@ def migrate_data():
     engine = create_engine(DATABASE_URL)
 
     with engine.begin() as connection:
+        
 ##########Migrate eigendur_eininga############
         connection.execute(text("""
             INSERT INTO raforka_updated.eigendur_eininga (heiti)
@@ -83,6 +84,7 @@ def migrate_data():
             FROM raforka_legacy.notendur_skraning old
             JOIN raforka_updated.eigendur_notenda en ON en.kennitala = old.kennitala
 """))
+        
 ###########Migrate orkumaelingar###########
 
 #Add old_id for reference

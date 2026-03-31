@@ -7,7 +7,6 @@ API/Legacy api/app/services/__pycache__/service.cpython-311.pyc
 /API/Legacy api/app/services/__pycache__
 /.venv
 *.pyc
-*.pyc
 API/Updated api/app/db/__pycache__/session.cpython-311.pyc
 API/Updated api/app/db/tables/__pycache__/eigendur_eininga.cpython-311.pyc
 API/Updated api/app/db/tables/__pycache__/eigendur_notenda.cpython-311.pyc
